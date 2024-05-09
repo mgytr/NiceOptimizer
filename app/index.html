@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/eel.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="shortcut icon" href="/icon.ico" type="image/x-icon">
+
+</head>
+<body onload="onload()">
+    
+    <div class="tabs">
+        <button tab="0" >Performance</button>
+        <button tab="1" >Telemetry</button>
+        <button tab="2" >Speed</button>
+
+    </div>
+
+    <div class="tabcontents">
+        <div class="c" tab="0">
+            <chk c="disFstp" t="Fast Startup is known to create some issues regarding the computer not shutting down properly. Disabling Fast Startup slows the starting of your PC, but improves its performance.">
+                Disable Fast Startup
+            </chk>
+            <chk c="disSysRestore" t="Disables System Restore, which is a feature that allows you to revert your computer's state to a previous point in time.">
+                Disable System Restore
+            </chk>
+            <chk c="disThrottling" t="Prevents the computer from pushing other apps including the background apps into the suppressed state and triggers high performance.">
+                Disable Power Throttling
+            </chk>
+            <chk c="disableAnimations" t="Disables Windows animations.">
+                Disable animations
+            </chk>    
+        </div>
+
+        <div class="c" tab="1">
+            <chk c="disTelemetry"
+                t="Disables these services: DiagTrack, dmwappushservice, Wecsvc, WerSvc and also adds registry value 'AllowTelemetry' and sets it to 0.">
+                Disable Telemetry
+            </chk>
+            <chk c="disDefender" t="Disables Windows Defender">
+                Disable Windows Defender (DISABLE TAMPER PROTECTION FIRST!)
+            </chk>
+        </div>
+
+        <div class="c" tab="2">
+            <chk c="reduceShutdownTime" t="Reduces the shutdown time by setting 'WaitToKillServiceTimeout' to 2000 (2 seconds)">
+                Reduce Shutdown Time
+            </chk>
+        </div>
+        <h4 class="credits">NiceOptimizer (by mgyt)</h4>
+
+        
+    </div>
+    <div class="confirm hidden">
+        <p id="requiredmsg"></p>
+        <br>
+        <button onclick="applyTweaks()" class="btnn">Apply</button>
+        <button onclick="discardTweaks()" class="btnn">Discard</button>
+        <button onclick="laterTweaks()" id="latertweaks" class="btnn hidden">Later</button>
+    </div>
+
+
+
+</body>
+</html>
