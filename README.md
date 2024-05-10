@@ -1,5 +1,5 @@
 ![NiceOptimizer Icon](.github_assets/icon.png)
-# &nbsp;&nbsp;NiceOptimizer
+# NiceOptimizer
 
 My hobby Windows Optimizer project
 
