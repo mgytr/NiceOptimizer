@@ -1,7 +1,8 @@
+var version = null
 var changes = {}
 const encforHTML = (s) => {return s.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
     return '&#'+i.charCodeAt(0)+';';
- });};
+ }).replace('\n', '<br>');};
 var statuses = {}
 eel;
 
@@ -52,6 +53,24 @@ async function onload() {
         chk.outerHTML = `<input title="${chk.getAttribute('t')}" onclick="checkedBox('${chid}')" type="checkbox" ${(statuses[chid] ? 'checked="checked"' : '') } c="${chid}" id="chkbox_${chid}"><label for="chkbox_${chk.getAttribute('c')}">${chk.innerHTML}</label><br>`
         }, 1, chid, chk)
     }
+    let checkUpdates = await eel.checkUpdates()()
+
+    if (checkUpdates[1] === 'update') {
+        if (checkUpdates[0] !== false) {
+            document.querySelector('div.updatecont').classList.remove('hidden')
+            document.getElementById('textupd').innerText = `Update available: ${checkUpdates[0]}`
+            document.getElementById('textupd').innerHTML += `<br><br>Release notes:<br>${encforHTML(checkUpdates[2])}`
+            version = checkUpdates[0]
+            document.getElementById('titleupd').innerText = 'Update available!'
+        }
+    }
+    else if (checkUpdates[1] === 'error') {
+        document.querySelector('div.updatecont').classList.remove('hidden')
+        document.getElementById('textupd').innerText = `${checkUpdates[0]}`
+        document.getElementById('titleupd').innerText = 'Error checking for updates!'
+    }
+
+
 
 
 }
@@ -212,4 +231,10 @@ function applyTweaks() {
         return
     }
     
+}
+function later() {
+    document.querySelector('div.updatecont').classList.add('hidden')
+}
+function update() {
+    eel.openurl('https://github.com/mgytr/NiceOptimizer/releases/v' + version)()
 }

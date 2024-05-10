@@ -11,7 +11,16 @@
 
 </head>
 <body onload="onload()">
-    
+    <div class="updatecont hidden">
+        <div class="update">
+            <b id="titleupd"></b>
+
+            <p id="textupd"></p>
+
+            <button onclick="update()" class="btnn">Update</button>
+            <button onclick="later()" class="btnn">Later</button>
+        </div>
+    </div>
     <div class="tabs">
         <button tab="0" >Performance</button>
         <button tab="1" >Telemetry</button>
@@ -33,6 +42,9 @@
             <chk c="disableAnimations" t="Disables Windows animations.">
                 Disable animations
             </chk>    
+            <chk c="bestPowerPlan" t="Adds and selects the 'Ultimate Performance' power plan.">
+                Ultimate Performance Power Plan
+            </chk>
         </div>
 
         <div class="c" tab="1">
