@@ -1,5 +1,10 @@
 import sys
 import os
+VERSION = '0.0.2a'
+if sys.platform != 'win32':
+    print('This program is only for Windows')
+    input('Press Enter to exit...')
+    sys.exit()
 f_logs = None
 if hasattr(sys, "_MEIPASS"): # if the script is started from an executable file
     
@@ -12,6 +17,8 @@ def script():
     # import webview
     import webview
     import threading
+    from webbrowser import open as openURL
+    from base64 import b64decode
     #import windows registry api
     import winreg
     from time import sleep
@@ -19,6 +26,7 @@ def script():
     import tools
     from string import ascii_uppercase
     from io import StringIO
+    from requests import get
 
 
     hklm = winreg.HKEY_LOCAL_MACHINE
@@ -153,38 +161,7 @@ def script():
                     return value == 2 and mask == b'\x9e\x12\x01\x80\x10\x00\x00\x00'
                 except FileNotFoundError:
                     return False
-    """paths = [f'{letter}:\\*' for letter in ascii_uppercase]+['\\\\*\\*', '\\\\*\\*\\*', '\\\\*']
 
-
-    def disableDefender(view=False, disable=True):
-
-        "Add-MpPreference -ExclusionPath 'C:\*'"
-        
-        if not view:
-            if disable:
-                for x in paths:
-                    Popen(f'''powershell -inputformat none -NonInteractive -Command "Add-MpPreference -ExclusionPath '{x}'"''', shell=True)
-                Popen('powershell -c "Set-MpPreference -DisableRealtimeMonitoring $true"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableBehaviorMonitoring $true"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableBlockAtFirstSeen $true"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableIOAVProtection $true"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisablePrivacyMode $true"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -SignatureDisableUpdateOnStartupWithoutEngine $true"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -SubmitSamplesConsent 2"', shell=True, stdout=PIPE, stderr=PIPE)
-            else:
-                for x in paths:
-                    Popen(f'''powershell -inputformat none -NonInteractive -Command "Remove-MpPreference -ExclusionPath '{x}'"''', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableRealtimeMonitoring $false"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableBehaviorMonitoring $false"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableBlockAtFirstSeen $false"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisableIOAVProtection $false"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -DisablePrivacyMode $false"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -SignatureDisableUpdateOnStartupWithoutEngine $false"', shell=True, stdout=PIPE, stderr=PIPE)
-                Popen('powershell -c "Set-MpPreference -SubmitSamplesConsent 1"', shell=True, stdout=PIPE, stderr=PIPE)
-
-        else:
-            return tools.getStatusDefender().count(False) >= 7
-    """
     def disableDefender(view=False, disable=True):
         # (hklm, R'SOFTWARE\Policies\Microsoft\Windows Defender',
         #             'DisableAntiSpyware', 0, dword)
@@ -224,13 +201,50 @@ def script():
                 except FileNotFoundError:
                     return False
 
+    def bestPowerPlan(view=False, disable=True):
+        p = os.path.join(os.environ['APPDATA'], "ultraperformanceid_NiceOptimizer.txt")
+        if disable:
+            open(os.path.join(os.environ['TEMP'], 'ultra_performance.pow'), 'wb').write(
+                b64decode(tools.powercfg)
+                )
+            guid = check_output('powercfg -import "' + os.path.join(os.environ['TEMP'], 'ultra_performance.pow') + '"').decode().split('Imported Power Scheme Successfully. GUID: ')[1].strip()
 
+            check_output(f'powercfg -setactive {guid}')
+            open(p, 'w').write(guid)
+        else:
+            rnspace = '\r\n '
+            check_output('powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c')
+            check_output(f'powercfg -delete {open(p).read().strip(rnspace)}')
+
+            os.remove(p)
+        
+        if view:
+            return os.path.exists(p)
+            
+
+       
     @eel.expose
     def applyTweaks(tweaks):
         for tweak, action in tweaks.items():
             actions[tweak](view=False, disable=action)
         return True
-            
+    @eel.expose
+    def checkUpdates():
+        try:
+            r = get('https://api.github.com/repos/mgytr/NiceOptimizer/releases')
+        except Exception as e:
+            return f'{e.__class__.__name__}: {e}', 'error'
+        json_ = r.json()
+        if r.status_code == 200:
+            latest = json_[0]['tag_name'][1:]
+            if latest != VERSION:
+                return latest, 'update', json_[0]['body']
+            return False, 'update'
+        else:
+            return 'You are either rate limited or there is any other issue. JSON: ' + str(json_), 'error'
+    @eel.expose
+    def openurl(url):
+        openURL(url)
     actions = {
         'disFstp': disFstp,
         'disTelemetry': disTelemetry,
@@ -238,7 +252,8 @@ def script():
         'disSysRestore': disSysRestore,
         'reduceShutdownTime': reduceShutdownTime,
         'disableAnimations': disableAnimations,
-        'disDefender': disableDefender
+        'disDefender': disableDefender,
+        'bestPowerPlan': bestPowerPlan
     }
 
     @eel.expose
