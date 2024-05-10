@@ -207,14 +207,14 @@ def script():
             open(os.path.join(os.environ['TEMP'], 'ultra_performance.pow'), 'wb').write(
                 b64decode(tools.powercfg)
                 )
-            guid = check_output('powercfg -import "' + os.path.join(os.environ['TEMP'], 'ultra_performance.pow') + '"').decode().split('Imported Power Scheme Successfully. GUID: ')[1].strip()
+            guid = check_output('powercfg -import "' + os.path.join(os.environ['TEMP'], 'ultra_performance.pow') + '"', shell=True).decode().split('Imported Power Scheme Successfully. GUID: ')[1].strip()
 
-            check_output(f'powercfg -setactive {guid}')
+            check_output(f'powercfg -setactive {guid}', shell=True)
             open(p, 'w').write(guid)
         else:
             rnspace = '\r\n '
-            check_output('powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c')
-            check_output(f'powercfg -delete {open(p).read().strip(rnspace)}')
+            Popen('powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c', shell=True)
+            check_output(f'powercfg -delete {open(p).read().strip(rnspace)}', shell=True)
 
             os.remove(p)
         
