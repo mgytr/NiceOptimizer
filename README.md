@@ -5,7 +5,7 @@ My hobby Windows Optimizer project
 
 # Installation
 
-Go to releases, and download the compiled zip file (WILL BE AVALIBLE SOON)  
+Go to releases, and download the exe [or click here](https://github.com/mgytr/NiceOptimizer/releases/latest/download/NiceOptimizer.exe)
 (make a exclusion for the tweaker because:  
 1: I don't have a certificate  
 2: There is a tweak what you can disable Windows Defender with, and windows defender detects it)
