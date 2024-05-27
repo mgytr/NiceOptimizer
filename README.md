@@ -18,7 +18,7 @@ There type:
 `pip install -r requirements.txt`  
 `python -m PyInstaller -Fw main.py --add-data "app;app" -i app\icon.ico --uac-admin`  
 Go to dist, and there is your portable exe  
-(NO SUPPORT FOR UPDATER YET!)
+
 
 # License
 MIT
